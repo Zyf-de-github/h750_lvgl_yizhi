@@ -431,69 +431,69 @@
  *================*/
 
 /*Documentation of the widgets: https://docs.lvgl.io/latest/en/html/widgets/index.html*/
-#define LV_USE_ARC        0   // 不用圆弧
-#define LV_USE_ANIMIMG    0   // 不用动画图片
-#define LV_USE_BAR        0   // 不用进度条
-#define LV_USE_BTN        1   // 按钮必须
-#define LV_USE_BTNMATRIX  0   // 不用按钮矩阵
-#define LV_USE_CANVAS     0   // 不用画布
-#define LV_USE_CHECKBOX   0   // 不用复选框
-#define LV_USE_DROPDOWN   0   // 不用下拉框
-#define LV_USE_IMG        0   // 不用图片控件
-#define LV_USE_LABEL      1   // 标签必须
+// #define LV_USE_ARC        0   // 不用圆弧
+// #define LV_USE_ANIMIMG    0   // 不用动画图片
+// #define LV_USE_BAR        0   // 不用进度条
+// #define LV_USE_BTN        1   // 按钮必须
+// #define LV_USE_BTNMATRIX  0   // 不用按钮矩阵
+// #define LV_USE_CANVAS     0   // 不用画布
+// #define LV_USE_CHECKBOX   0   // 不用复选框
+// #define LV_USE_DROPDOWN   0   // 不用下拉框
+// #define LV_USE_IMG        0   // 不用图片控件
+// #define LV_USE_LABEL      1   // 标签必须
+// #if LV_USE_LABEL
+//     #define LV_LABEL_TEXT_SELECTION 0 // 关闭文本选择
+//     #define LV_LABEL_LONG_TXT_HINT 0  // 关闭长文本优化
+// #endif
+//
+// #define LV_USE_LINE       0   // 不用直线
+// #define LV_USE_ROLLER     0   // 不用滚轮
+// #define LV_USE_SLIDER     0   // 不用滑块
+// #define LV_USE_SWITCH     0   // 不用开关
+// #define LV_USE_TEXTAREA   0   // 不用文本框
+// #define LV_USE_TABLE      0   // 不用表格
+
+#define LV_USE_ARC        1
+
+#define LV_USE_ANIMIMG    1
+
+#define LV_USE_BAR        1
+
+#define LV_USE_BTN        1
+
+#define LV_USE_BTNMATRIX  1
+
+#define LV_USE_CANVAS     1
+
+#define LV_USE_CHECKBOX   1
+
+#define LV_USE_DROPDOWN   1   /*Requires: lv_label*/
+
+#define LV_USE_IMG        1   /*Requires: lv_label*/
+
+#define LV_USE_LABEL      1
 #if LV_USE_LABEL
-    #define LV_LABEL_TEXT_SELECTION 0 // 关闭文本选择
-    #define LV_LABEL_LONG_TXT_HINT 0  // 关闭长文本优化
+    #define LV_LABEL_TEXT_SELECTION 1 /*Enable selecting text of the label*/
+    #define LV_LABEL_LONG_TXT_HINT 1  /*Store some extra info in labels to speed up drawing of very long texts*/
 #endif
 
-#define LV_USE_LINE       0   // 不用直线
-#define LV_USE_ROLLER     0   // 不用滚轮
-#define LV_USE_SLIDER     0   // 不用滑块
-#define LV_USE_SWITCH     0   // 不用开关
-#define LV_USE_TEXTAREA   0   // 不用文本框
-#define LV_USE_TABLE      0   // 不用表格
+#define LV_USE_LINE       1
 
-// #define LV_USE_ARC        1
-//
-// #define LV_USE_ANIMIMG    1
-//
-// #define LV_USE_BAR        1
-//
-// #define LV_USE_BTN        1
-//
-// #define LV_USE_BTNMATRIX  1
-//
-// #define LV_USE_CANVAS     1
-//
-// #define LV_USE_CHECKBOX   1
-//
-// #define LV_USE_DROPDOWN   1   /*Requires: lv_label*/
-//
-// #define LV_USE_IMG        1   /*Requires: lv_label*/
-//
-// #define LV_USE_LABEL      1
-// #if LV_USE_LABEL
-//     #define LV_LABEL_TEXT_SELECTION 1 /*Enable selecting text of the label*/
-//     #define LV_LABEL_LONG_TXT_HINT 1  /*Store some extra info in labels to speed up drawing of very long texts*/
-// #endif
-//
-// #define LV_USE_LINE       1
-//
-// #define LV_USE_ROLLER     1   /*Requires: lv_label*/
-// #if LV_USE_ROLLER
-//     #define LV_ROLLER_INF_PAGES 7 /*Number of extra "pages" when the roller is infinite*/
-// #endif
-//
-// #define LV_USE_SLIDER     1   /*Requires: lv_bar*/
-//
-// #define LV_USE_SWITCH     1
-//
-// #define LV_USE_TEXTAREA   1   /*Requires: lv_label*/
-// #if LV_USE_TEXTAREA != 0
-//     #define LV_TEXTAREA_DEF_PWD_SHOW_TIME 1500    /*ms*/
-// #endif
-//
-// #define LV_USE_TABLE      1
+#define LV_USE_ROLLER     1   /*Requires: lv_label*/
+#if LV_USE_ROLLER
+    #define LV_ROLLER_INF_PAGES 7 /*Number of extra "pages" when the roller is infinite*/
+#endif
+
+#define LV_USE_SLIDER     1   /*Requires: lv_bar*/
+
+#define LV_USE_SWITCH     1
+
+#define LV_USE_TEXTAREA   1   /*Requires: lv_label*/
+#if LV_USE_TEXTAREA != 0
+    #define LV_TEXTAREA_DEF_PWD_SHOW_TIME 1500    /*ms*/
+#endif
+
+#define LV_USE_TABLE      1
 
 /*==================
  * EXTRA COMPONENTS

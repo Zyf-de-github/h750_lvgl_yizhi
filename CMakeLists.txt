@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 
+#arm-none-eabi-objcopy -O binary STM32H750Prg.elf STM32H750Prg.bin
+#elf转bin文件
+
 #
 # This file is generated only once,
 # and is not re-generated if converter is called multiple times.

@@ -56,7 +56,7 @@ void lv_port_disp_init(void)
 
     static lv_disp_draw_buf_t draw_buf_dsc_1;
     static lv_color_t buf_1[MY_DISP_HOR_RES * 100];                          /*A buffer for 10 rows*/
-    lv_disp_draw_buf_init(&draw_buf_dsc_1, buf_1, NULL, MY_DISP_HOR_RES * 10);   /*Initialize the display buffer*/
+    lv_disp_draw_buf_init(&draw_buf_dsc_1, buf_1, NULL, MY_DISP_HOR_RES * 100);   /*Initialize the display buffer*/
 
     /*-----------------------------------
      * Register the display in LVGL
@@ -77,15 +77,6 @@ void lv_port_disp_init(void)
     /*Set a display buffer*/
     disp_drv.draw_buf = &draw_buf_dsc_1;
 
-    /*Required for Example 3)*/
-    //disp_drv.full_refresh = 1
-
-    /* Fill a memory array with a color if you have GPU.
-     * Note that, in lv_conf.h you can enable GPUs that has built-in support in LVGL.
-     * But if you have a different GPU you can use with this callback.*/
-    //disp_drv.gpu_fill_cb = gpu_fill;
-
-    /*Finally register the driver*/
     lv_disp_drv_register(&disp_drv);
 }
 
@@ -100,38 +91,28 @@ static void disp_init(void)
     SPI_LCD_Init();
 }
 
-/*Flush the content of the internal buffer the specific area on the display
- *You can use DMA or any hardware acceleration to do this operation in the background but
- *'lv_disp_flush_ready()' has to be called when finished.*/
+
 static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * color_p)
 {
-    /*The most simple case (but also the slowest) to put all pixels to the screen one-by-one*/
+    uint32_t width  = area->x2 - area->x1 + 1;
+    uint32_t height = area->y2 - area->y1 + 1;
 
+    for(uint32_t y = 0; y < height; y++) {
+      for(uint32_t x = 0; x < width; x++) {
+      lv_color_t c = color_p[y * width + x];
 
-    LCD_color_fill(area->x1,area->y1,area->x2,area->y2,(uint32_t)color_p);
-    /*IMPORTANT!!!
-     *Inform the graphics library that you are ready with the flushing*/
-    lv_disp_flush_ready(disp_drv);
+      // LVGL 默认 lv_color_t 是 16-bit RGB565，如果 LCD 接口需要 24-bit 或 32-bit
+      uint32_t color32 = ((c.ch.red   & 0xF8) << 16) |
+                         ((c.ch.green & 0xFC) << 8)  |
+                         ((c.ch.blue  & 0xF8));
+
+      // 写到屏幕上对应坐标
+      LCD_color_fill(area->x1 + x, area->y1 + y, area->x1 + x, area->y1 + y, color32);
+     }
+    }
+
+    lv_disp_flush_ready(disp_drv);  // 刷新完成通知 LVGL
 }
-
-/*OPTIONAL: GPU INTERFACE*/
-
-/*If your MCU has hardware accelerator (GPU) then you can use it to fill a memory with a color*/
-//static void gpu_fill(lv_disp_drv_t * disp_drv, lv_color_t * dest_buf, lv_coord_t dest_width,
-//                    const lv_area_t * fill_area, lv_color_t color)
-//{
-//    /*It's an example code which should be done by your GPU*/
-//    int32_t x, y;
-//    dest_buf += dest_width * fill_area->y1; /*Go to the first line*/
-//
-//    for(y = fill_area->y1; y <= fill_area->y2; y++) {
-//        for(x = fill_area->x1; x <= fill_area->x2; x++) {
-//            dest_buf[x] = color;
-//        }
-//        dest_buf+=dest_width;    /*Go to the next line*/
-//    }
-//}
-
 
 #else /*Enable this file at the top*/
 
