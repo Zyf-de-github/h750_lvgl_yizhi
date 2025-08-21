@@ -55,8 +55,8 @@ void lv_port_disp_init(void)
      *----------------------------*/
 
     static lv_disp_draw_buf_t draw_buf_dsc_1;
-    static lv_color_t buf_1[MY_DISP_HOR_RES * 100];                          /*A buffer for 10 rows*/
-    lv_disp_draw_buf_init(&draw_buf_dsc_1, buf_1, NULL, MY_DISP_HOR_RES * 100);   /*Initialize the display buffer*/
+    static lv_color_t buf_1[MY_DISP_HOR_RES * 20];                          /*A buffer for 10 rows*/
+    lv_disp_draw_buf_init(&draw_buf_dsc_1, buf_1, NULL, MY_DISP_HOR_RES * 20);   /*Initialize the display buffer*/
 
     /*-----------------------------------
      * Register the display in LVGL
@@ -94,24 +94,8 @@ static void disp_init(void)
 
 static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * color_p)
 {
-    uint32_t width  = area->x2 - area->x1 + 1;
-    uint32_t height = area->y2 - area->y1 + 1;
-
-    for(uint32_t y = 0; y < height; y++) {
-      for(uint32_t x = 0; x < width; x++) {
-      lv_color_t c = color_p[y * width + x];
-
-      // LVGL 默认 lv_color_t 是 16-bit RGB565，如果 LCD 接口需要 24-bit 或 32-bit
-      uint32_t color32 = ((c.ch.red   & 0xF8) << 16) |
-                         ((c.ch.green & 0xFC) << 8)  |
-                         ((c.ch.blue  & 0xF8));
-
-      // 写到屏幕上对应坐标
-      LCD_color_fill(area->x1 + x, area->y1 + y, area->x1 + x, area->y1 + y, color32);
-     }
-    }
-
-    lv_disp_flush_ready(disp_drv);  // 刷新完成通知 LVGL
+ LCD_color_fill(area->x1, area->y1, area->x2, area->y2, color_p);
+ lv_disp_flush_ready(disp_drv);  // 刷新完成通知 LVGL
 }
 
 #else /*Enable this file at the top*/

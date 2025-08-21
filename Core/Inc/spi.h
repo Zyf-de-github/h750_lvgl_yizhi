@@ -20,6 +20,7 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __SPI_H__
 #define __SPI_H__
+#include "lv_color.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -132,7 +133,9 @@ void  SPI_LCD_Init(void);      // Òº¾§ÆÁÒÔ¼°SPI³õÊ¼»¯
 void  LCD_Clear(void);			 // ÇåÆÁº¯Êý
 void  LCD_ClearRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height);	// ¾Ö²¿ÇåÆÁº¯Êý
 
-void  LCD_color_fill(uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2,uint32_t Color);
+// void  LCD_color_fill(uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2,uint32_t Color);
+void LCD_color_fill(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, lv_color_t *color_p);
+
 void  LCD_SetAddress(uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2);	// ÉèÖÃ×ø±ê
 void  LCD_SetColor(uint32_t Color); 				   //	ÉèÖÃ»­±ÊÑÕÉ«
 void  LCD_SetBackColor(uint32_t Color);  				//	ÉèÖÃ±³¾°ÑÕÉ«

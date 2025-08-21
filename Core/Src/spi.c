@@ -28,6 +28,8 @@
 
 /* USER CODE BEGIN 0 */
 #include <stdio.h>
+
+#include "lv_color.h"
 /* USER CODE END 0 */
 
 SPI_HandleTypeDef hspi4;
@@ -361,14 +363,14 @@ void SPI_LCD_Init(void)
  // ´ò¿ªÏÔÊ¾Ö¸Áî£¬LCD¿ØÖÆÆ÷ÔÚ¸ÕÉÏµç¡¢¸´Î»Ê±£¬»á×Ô¶¯¹Ø±ÕÏÔÊ¾
 	LCD_WriteCommand(0x29);       // ´ò¿ªÏÔÊ¾
 
-// ÒÔÏÂ½øÐÐÒ»Ð©Çý¶¯µÄÄ¬ÈÏÉèÖÃ
-   LCD_SetDirection(Direction_V);  	      //	ÉèÖÃÏÔÊ¾·½Ïò
-	LCD_SetBackColor(LCD_BLACK);           // ÉèÖÃ±³¾°É«
- 	LCD_SetColor(LCD_WHITE);               // ÉèÖÃ»­±ÊÉ«
-	LCD_Clear();                           // ÇåÆÁ
-
-   LCD_SetAsciiFont(&ASCII_Font12);       // ÉèÖÃÄ¬ÈÏ×ÖÌå
-   LCD_ShowNumMode(Fill_Zero);	      	// ÉèÖÃ±äÁ¿ÏÔÊ¾Ä£Ê½£¬¶àÓàÎ»Ìî³ä¿Õ¸ñ»¹ÊÇÌî³ä0
+// // ÒÔÏÂ½øÐÐÒ»Ð©Çý¶¯µÄÄ¬ÈÏÉèÖÃ
+//    LCD_SetDirection(Direction_V);  	      //	ÉèÖÃÏÔÊ¾·½Ïò
+// 	LCD_SetBackColor(LCD_BLACK);           // ÉèÖÃ±³¾°É«
+//  	LCD_SetColor(LCD_WHITE);               // ÉèÖÃ»­±ÊÉ«
+// 	LCD_Clear();                           // ÇåÆÁ
+//
+//    LCD_SetAsciiFont(&ASCII_Font12);       // ÉèÖÃÄ¬ÈÏ×ÖÌå
+//    LCD_ShowNumMode(Fill_Zero);	      	// ÉèÖÃ±äÁ¿ÏÔÊ¾Ä£Ê½£¬¶àÓàÎ»Ìî³ä¿Õ¸ñ»¹ÊÇÌî³ä0
 
 // È«²¿ÉèÖÃÍê±ÏÖ®ºó£¬´ò¿ª±³¹â
    LCD_Backlight_ON;  // Òý½ÅÊä³ö¸ßµçÆ½µãÁÁ±³¹â
@@ -382,25 +384,29 @@ void SPI_LCD_Init(void)
 *
 *	º¯Êý¹¦ÄÜ:   ÉèÖÃÐèÒªÏÔÊ¾µÄ×ø±êÇøÓò
 *****************************************************************************************************************************************/
-void LCD_color_fill(uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2,uint32_t Color)
+void LCD_color_fill(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, lv_color_t *color_p)
 {
-	LCD_WriteCommand(0x2a);			//	ÁÐµØÖ·ÉèÖÃ£¬¼´X×ø±ê
-	LCD_WriteData_16bit(x1+LCD.X_Offset);
-	LCD_WriteData_16bit(x2+LCD.X_Offset);
+	uint32_t width  = x2 - x1 + 1;
+	uint32_t height = y2 - y1 + 1;
 
-	LCD_WriteCommand(0x2b);			//	ÐÐµØÖ·ÉèÖÃ£¬¼´Y×ø±ê
-	LCD_WriteData_16bit(y1+LCD.Y_Offset);
-	LCD_WriteData_16bit(y2+LCD.Y_Offset);
+	// 设置显示区域
+	LCD_WriteCommand(0x2A);   // 设置列地址
+	LCD_WriteData_16bit(x1 + LCD.X_Offset);
+	LCD_WriteData_16bit(x2 + LCD.X_Offset);
 
-	LCD_WriteCommand(0x2c);			//	¿ªÊ¼Ð´ÈëÏÔ´æ£¬¼´ÒªÏÔÊ¾µÄÑÕÉ«Êý¾Ý
+	LCD_WriteCommand(0x2B);   // 设置行地址
+	LCD_WriteData_16bit(y1 + LCD.Y_Offset);
+	LCD_WriteData_16bit(y2 + LCD.Y_Offset);
 
-	uint16_t Red_Value = 0, Green_Value = 0, Blue_Value = 0; //¸÷¸öÑÕÉ«Í¨µÀµÄÖµ
+	LCD_WriteCommand(0x2C);   // 开始写数据
 
-	Red_Value   = (uint16_t)((Color&0x00F80000)>>8);   // ×ª»»³É 16Î» µÄRGB565ÑÕÉ«
-	Green_Value = (uint16_t)((Color&0x0000FC00)>>5);
-	Blue_Value  = (uint16_t)((Color&0x000000F8)>>3);
-
-	LCD.Color = (uint16_t)(Red_Value | Green_Value | Blue_Value);  // ½«ÑÕÉ«Ð´ÈëÈ«¾ÖLCD²ÎÊý
+	// 遍历缓冲区，连续写数据
+	for (uint32_t i = 0; i < width * height; i++)
+	{
+		lv_color_t c = color_p[i];
+		uint16_t color565 = (c.ch.red << 11) | (c.ch.green << 5) | c.ch.blue;
+		LCD_WriteData_16bit(color565);
+	}
 }
 
 /****************************************************************************************************************************************
